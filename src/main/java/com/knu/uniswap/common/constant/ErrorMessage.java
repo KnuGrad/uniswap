@@ -11,4 +11,7 @@ public class ErrorMessage {
     public static final String EMAIL_DUPLICATED = "이미 존재하는 이메일입니다.";
     public static final String EMAIL_NOT_CERTIFIED = "이메일 인증이 완료되지 않았습니다.";
 
+    public static final String LOGIN_FAILED = "이메일 또는 비밀번호가 올바르지 않습니다.";
+    public static final String LOGIN_REQUIRED = "로그인 후 이용해 주세요.";
+
 }

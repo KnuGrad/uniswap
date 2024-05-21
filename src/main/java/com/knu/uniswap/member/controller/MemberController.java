@@ -25,7 +25,7 @@ public class MemberController {
         memberService.addMember(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(ApiResponse.success(201));
+            .body(ApiResponse.success(201, null));
     }
 
 }

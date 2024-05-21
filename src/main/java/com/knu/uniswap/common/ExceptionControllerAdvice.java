@@ -15,20 +15,20 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> validate(ValidationException e) {
         return ResponseEntity.badRequest()
-            .body(ApiResponse.error(400, e.getMessage(), e.getErrorMap()));
+            .body(ApiResponse.fail(400, e.getMessage(), e.getErrorMap()));
     }
 
     @ExceptionHandler(DuplicationException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> duplicate(DuplicationException e) {
         return ResponseEntity.badRequest()
-            .body(ApiResponse.error(400, e.getMessage(), null));
+            .body(ApiResponse.fail(400, e.getMessage(), null));
     }
 
     @ExceptionHandler(EmailNotCertifiedException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> notCertified(
         EmailNotCertifiedException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(ApiResponse.error(403, e.getMessage(), null));
+            .body(ApiResponse.fail(403, e.getMessage(), null));
     }
 
 }

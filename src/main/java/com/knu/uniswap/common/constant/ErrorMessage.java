@@ -14,8 +14,6 @@ public class ErrorMessage {
     public static final String EMAIL_DUPLICATED = "이미 존재하는 이메일입니다.";
     public static final String EMAIL_NOT_CERTIFIED = "이메일 인증이 완료되지 않았습니다.";
     public static final String NO_ACCESS_PERMISSION = "접근 권한이 없습니다.";
-    public static final String SAME_NICKNAME = "현재 닉네임과 변경할 닉네임이 동일합니다.";
-    public static final String SAME_PASSWORD = "현재 비밀번호와 변경할 비밀번호가 동일합니다.";
 
     /* Member */
     public static final String MEMBER_NOT_FOUND = "존재하지 않는 아이디입니다.";

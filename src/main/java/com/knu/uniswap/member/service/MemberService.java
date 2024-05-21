@@ -65,8 +65,6 @@ public class MemberService {
         if (!member.getNickname().equals(request.getNickname())) {
             validateDuplicateNickname(request.getNickname());
             member.changeNickname(request.getNickname());
-        } else {
-            throw new ValidationException(ErrorMessage.SAME_NICKNAME);
         }
 
         if (!request.getPassword().equals(request.getCheckPassword())) {
@@ -75,8 +73,6 @@ public class MemberService {
 
         if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
             member.changePassword(passwordEncoder.encode(request.getPassword()));
-        } else {
-            throw new ValidationException(ErrorMessage.SAME_PASSWORD);
         }
     }
 

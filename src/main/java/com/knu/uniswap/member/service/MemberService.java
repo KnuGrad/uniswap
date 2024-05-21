@@ -3,11 +3,14 @@ package com.knu.uniswap.member.service;
 import com.knu.uniswap.common.constant.ErrorMessage;
 import com.knu.uniswap.common.exception.DuplicationException;
 import com.knu.uniswap.common.exception.EmailNotCertifiedException;
+import com.knu.uniswap.common.exception.UnauthorizedAccessException;
 import com.knu.uniswap.common.exception.ValidationException;
 import com.knu.uniswap.member.domain.Member;
 import com.knu.uniswap.member.domain.MemberRepository;
 import com.knu.uniswap.member.dto.MemberCreateRequest;
+import com.knu.uniswap.member.dto.MemberEditRequest;
 import com.univcert.api.UnivCert;
+import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +48,33 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
+    public void editMember(Long memberId, MemberEditRequest request, Long loginId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.MEMBER_NOT_FOUND));
+
+        if (!member.getId().equals(loginId)) {
+            throw new UnauthorizedAccessException(ErrorMessage.NO_ACCESS_PERMISSION);
+        }
+
+        if (!member.getNickname().equals(request.getNickname())) {
+            validateDuplicateNickname(request.getNickname());
+            member.changeNickname(request.getNickname());
+        } else {
+            throw new ValidationException(ErrorMessage.SAME_NICKNAME);
+        }
+
+        if (!request.getPassword().equals(request.getCheckPassword())) {
+            throw new ValidationException(ErrorMessage.PASSWORD_CONFIRMATION_FAILED);
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+            member.changePassword(passwordEncoder.encode(request.getPassword()));
+        } else {
+            throw new ValidationException(ErrorMessage.SAME_PASSWORD);
+        }
+    }
+
     private void checkCertified(String email) {
         try {
             boolean certified = (boolean) UnivCert.status(apiKey, email).get("success");
@@ -69,20 +99,12 @@ public class MemberService {
         });
     }
 
-//    private void validateDuplicateNickname(String nickname) {
-//        Optional<Member> existingUsername = memberRepository.findMemberByNickname(nickname);
-//
-//        existingUsername.ifPresent(foundMember -> {
-//            throw new DuplicationException(ErrorMessage.NICKNAME_DUPLICATED);
-//        });
-//    }
-//
-//    private void validateDuplicateEmail(String email) {
-//        Optional<Member> existingEmail = memberRepository.findMemberByEmail(email);
-//
-//        existingEmail.ifPresent(foundMember -> {
-//            throw new DuplicationException(ErrorMessage.EMAIL_DUPLICATED);
-//        });
-//    }
+    private void validateDuplicateNickname(String nickname) {
+        Optional<Member> existingUsername = memberRepository.findMemberByNickname(nickname);
+
+        existingUsername.ifPresent(foundMember -> {
+            throw new DuplicationException(ErrorMessage.NICKNAME_DUPLICATED);
+        });
+    }
 
 }

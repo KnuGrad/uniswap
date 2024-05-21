@@ -3,6 +3,7 @@ package com.knu.uniswap.common;
 import com.knu.uniswap.common.exception.DuplicationException;
 import com.knu.uniswap.common.exception.EmailNotCertifiedException;
 import com.knu.uniswap.common.exception.ValidationException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,12 @@ public class ExceptionControllerAdvice {
         EmailNotCertifiedException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(ApiResponse.fail(403, e.getMessage(), null));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> entityNotFound(EntityNotFoundException e) {
+        return ResponseEntity.badRequest()
+            .body(ApiResponse.fail(400, e.getMessage(), null));
     }
 
 }

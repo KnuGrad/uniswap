@@ -1,5 +1,8 @@
 package com.knu.uniswap.member.controller;
 
+import static java.lang.Integer.parseInt;
+
+import com.knu.uniswap.common.ApiResponse;
 import com.knu.uniswap.member.dto.UnivEmailAuthCodeRequest;
 import com.knu.uniswap.member.dto.UnivEmailCertificationRequest;
 import com.knu.uniswap.member.service.UnivEmailService;
@@ -21,19 +24,29 @@ public class UnivEmailController {
     private final UnivEmailService univEmailService;
 
     @PostMapping("/certification-code")
-    public ResponseEntity<Map<String, Object>> sendCode(@RequestBody @Valid UnivEmailAuthCodeRequest request, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse> sendCode(@RequestBody @Valid UnivEmailAuthCodeRequest request, BindingResult bindingResult) {
         Map<String, Object> result = univEmailService.sendCode(request);
 
-        return ResponseEntity.ok()
-            .body(result);
+        if ((boolean) result.get("success")) {
+            return ResponseEntity.ok()
+                .body(ApiResponse.success((int) result.get("code"), null));
+        }
+
+        return ResponseEntity.badRequest()
+            .body(ApiResponse.fail((int) result.get("code"), result.get("message").toString(), null));
     }
 
     @PostMapping("/certify")
-    public ResponseEntity<Map<String, Object>> certify(@RequestBody UnivEmailCertificationRequest request, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse> certify(@RequestBody UnivEmailCertificationRequest request, BindingResult bindingResult) {
         Map<String, Object> result = univEmailService.certifyCode(request);
 
-        return ResponseEntity.ok()
-            .body(result);
+        if ((boolean) result.get("success")) {
+            return ResponseEntity.ok()
+                .body(ApiResponse.success((int) result.get("code"), null));
+        }
+
+        return ResponseEntity.badRequest()
+            .body(ApiResponse.fail(400, result.get("message").toString(), null));
     }
 
 }

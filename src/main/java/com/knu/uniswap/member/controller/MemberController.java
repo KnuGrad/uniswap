@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +38,15 @@ public class MemberController {
     public ResponseEntity<ApiResponse> memberEdit(@PathVariable Long memberId, @RequestBody @Valid MemberEditRequest memberEditRequest, BindingResult bindingResult, @AuthenticationPrincipal MemberPrincipal userDetails) {
         Long loginId = userDetails.getMember().getId();
         memberService.editMember(memberId, memberEditRequest, loginId);
+
+        return ResponseEntity.ok()
+            .body(ApiResponse.success(200, null));
+    }
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<ApiResponse> withdrawal(@PathVariable Long memberId, @AuthenticationPrincipal MemberPrincipal userDetails) {
+        Long loginId = userDetails.getMember().getId();
+        memberService.removeMember(memberId, loginId);
 
         return ResponseEntity.ok()
             .body(ApiResponse.success(200, null));

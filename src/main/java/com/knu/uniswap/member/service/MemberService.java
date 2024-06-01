@@ -9,6 +9,7 @@ import com.knu.uniswap.member.domain.Member;
 import com.knu.uniswap.member.domain.MemberRepository;
 import com.knu.uniswap.member.dto.MemberCreateRequest;
 import com.knu.uniswap.member.dto.MemberEditRequest;
+import com.knu.uniswap.store.domain.Store;
 import com.univcert.api.UnivCert;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +50,10 @@ public class MemberService {
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
             .build();
+
+        Store store = Store.builder().member(member).build();
+
+        member.setStore(store);
 
         memberRepository.save(member);
     }

@@ -18,4 +18,10 @@ public class ErrorMessage {
     /* Member */
     public static final String MEMBER_NOT_FOUND = "존재하지 않는 아이디입니다.";
 
+    /* StoreController */
+    public static final String NOT_ATTACHED_IMAGE = "이미지 파일을 첨부해 주세요.";
+
+    /* Store */
+    public static final String STORE_NOT_FOUND = "존재하지 않는 상점입니다.";
+
 }

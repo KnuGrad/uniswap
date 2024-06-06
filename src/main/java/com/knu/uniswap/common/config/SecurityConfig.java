@@ -36,20 +36,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(c -> c.disable())
-            .formLogin(f -> f.disable())
-            .httpBasic(h -> h.disable())
-            .addFilterBefore(memberAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .logout(logout -> logout
-                .logoutUrl("/api/members/logout")
-                .logoutSuccessHandler(new LogoutSuccessHandler(objectMapper)))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/api/members/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/emails/**").permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll())
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(new Http401Handler(objectMapper)));
+                .csrf(c -> c.disable())
+                .formLogin(f -> f.disable())
+                .httpBasic(h -> h.disable())
+                .addFilterBefore(memberAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout
+                        .logoutUrl("/api/members/logout")
+                        .logoutSuccessHandler(new LogoutSuccessHandler(objectMapper)))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/api/members/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/emails/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/goods/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/goods/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/goods/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/goods/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new Http401Handler(objectMapper)));
 
         return http.build();
     }
@@ -85,5 +89,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
